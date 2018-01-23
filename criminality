@@ -1,0 +1,399 @@
+#include <conio.h>
+#include <stdio.h>
+#include <graphics.h>
+#include <stdlib.h>
+#include <dos.h>
+#include <string.h>
+FILE *fp,*fp2;
+int x;
+
+/*This is Struct for All Record and Data*/
+
+struct entred_date
+{
+	int d,m,y;
+};
+struct address
+{
+    char city[20];
+    char street[20];
+};
+struct cirimial
+{
+char cirme[50];
+char p_ment[50];
+int caluse;
+struct entred_date dd;
+};
+struct birthday
+{
+	int d,m,y;
+};
+struct accused
+{
+char name[20];
+char phone[13];
+int id;
+ struct birthday bd;
+ struct cirimial ci;
+ struct address add;
+ }acc;
+
+ ///////////////////////////////////////////////////////////////////
+
+void add()
+{
+a:
+fp=fopen("data1.txt","w+");
+int c=0,p;
+do
+{
+printf("\nEnter The ID : ");
+scanf("%d",&x);
+fread(&acc,sizeof(acc),1,fp);
+rewind(fp);
+while(!feof(fp))
+{
+if(x==acc.id)
+{
+c=1;
+printf(" * ID You Entred is Found ! ... To trg Again Press Y or N to Back to Menu *\n");
+char ch=getche();
+if(ch=='Y' || ch=='y')
+goto a;
+else
+goto e;
+}
+else
+c=0;
+fread(&acc,sizeof(acc),1,fp);
+}
+if(c==0)
+{
+acc.id=x;
+printf("\nEnter Accused Name :");
+scanf("%s",acc.name);
+printf("\nEnter The Address :");
+printf("\n		City : ");
+fflush(stdin);
+gets(acc.add.city);
+printf("\n		Street : ");
+fflush(stdin);
+gets(acc.add.street);
+printf("\nEnter Phone : ");
+fflush(stdin);
+gets(acc.phone);
+printf("\n			= Enter The Birthday = ");
+   printf("\n		Day : ");
+   scanf("%d",&acc.bd.d);
+   printf("\n		Month : ");
+   scanf("%d",&acc.bd.m);
+   printf("\n		Year : ");
+   scanf("%d",&acc.bd.y);
+   printf("\n===================== Now Enter Data of Cirimial =====================");
+   printf("\nCirme : ");
+   fflush(stdin);
+   gets(acc.ci.cirme);
+   printf("\nCaluse : ");
+   scanf("%d",&acc.ci.caluse);
+   printf("\nEnter The P_ment : ");
+   fflush(stdin);
+   gets(acc.ci.p_ment);
+   printf("\n* Enter The Date of Cirme .. ");
+   printf("\n		Day : ");
+   scanf("%d",&acc.ci.dd.d);
+   printf("\n		Month : ");
+   scanf("%d",&acc.ci.dd.m);
+   printf("\n		Year : ");
+   scanf("%d",&acc.ci.dd.y);
+fseek(fp,sizeof(acc),SEEK_SET);
+fwrite(&acc,sizeof(acc),1,fp);
+}
+printf("\n		      * Do You want to Continue Y/N ? *");
+if(getche()=='n')
+goto e;
+}while(getche()=='y');
+fclose(fp);
+e:
+}
+
+//////////////////////////////////////////////////////////////////////
+
+void Del()
+{
+fp=fopen("data1.txt","r");
+fp2=fopen("data2.txt","w");
+int flag=0,x;
+printf("Enter The no of Accuesd to Delete : ");
+scanf("%d",&x);
+fread(&acc,sizeof(acc),1,fp);
+while(feof(fp)==0)
+{
+if(x==acc.id)
+{
+fread(&acc,sizeof(acc),1,fp);
+flag=1;
+}
+else
+{
+fwrite(&acc,sizeof(acc),1,fp2);
+fread(&acc,sizeof(acc),1,fp);
+}
+}
+fclose(fp2);
+fclose(fp);
+fp=fopen("data1.txt","w");
+fp2=fopen("data2.txt","r");
+fread(&acc,sizeof(acc),1,fp);
+while(feof(fp2)==0)
+{
+fwrite(&acc,sizeof(acc),1,fp);
+fread(&acc,sizeof(acc),1,fp2);
+}
+fclose(fp);
+fclose(fp2);
+remove("data2.txt");
+if(flag==0)
+{
+printf("Error ... The Record Not Found to Delete !\n\n			* Press any key to Back to Menu *");
+getch();
+goto e;
+}
+else
+printf("The Record has been Deleted !\n\n			* Press any key to Back to Menu *");
+getch();
+e:
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void Modefiy()
+{
+char ch[10];
+printf("Enter ID of Accused to Modify : ");
+scanf("%d",&x);
+fp=fopen("data1.txt","a+");
+while(!feof(fp))
+{
+fread(&acc,sizeof(acc),1,fp);
+}
+if(acc.id==x)
+{
+printf("\nEnter New Accused Name :");
+scanf("%s",acc.name);
+printf("\nEnter New Address : ");
+printf("\n		City : ");
+fflush(stdin);
+gets(acc.add.city);
+printf("\n		Street : ");
+fflush(stdin);
+gets(acc.add.street);
+printf("\nEnter New Phone : ");
+fflush(stdin);
+gets(acc.phone);
+printf("\n			= Enter The Birthday = ");
+printf("\n		Day : ");
+scanf("%d",&acc.bd.d);
+printf("\n		Month : ");
+scanf("%d",&acc.bd.m);
+printf("\n		Year : ");
+scanf("%d",&acc.bd.y);
+   printf("\n===================== Now Enter New Data of Cirimial =====================");
+   printf("\nNew Cirme : ");
+   fflush(stdin);
+   gets(acc.ci.cirme);
+   printf("\nNew Caluse : ");
+   scanf("%d",&acc.ci.caluse);
+   printf("\nEnter New The P_ment : ");
+   fflush(stdin);
+   gets(acc.ci.p_ment);
+   printf("\n* Enter The New Date of Cirme .. ");
+   printf("\n		Day : ");
+   scanf("%d",&acc.ci.dd.d);
+   printf("\n		Month : ");
+   scanf("%d",&acc.ci.dd.m);
+   printf("\n		Year : ");
+   scanf("%d",&acc.ci.dd.y);
+fwrite(&acc,sizeof(acc),1,fp);
+printf("\nThe All data has been Changed !\n\n			* Press any key to Back to Menu *");
+getch();
+goto e;
+}
+else
+{
+printf("\n\t\t* Sorry .. The ID not Found to Edit ! *");
+getch();
+goto e;
+}
+fclose(fp);
+getch();
+e:
+}
+
+///////////////////////////////////////////////////////////////////////
+
+void Search_ID()
+{
+fp=fopen("data1.txt","r+");
+rewind(fp);
+printf("Enter The no of Accused to Search : ");
+scanf("%d",&x);
+while(!feof(fp))
+{
+fread(&acc,sizeof(acc),1,fp);
+if(acc.id==x)
+{
+   printf("\nThe Full Name is : %s",acc.name);
+   printf("\nBirthday is : %d/%d/%d",acc.bd.d,acc.bd.m,acc.bd.y);
+   printf("\nAddress is : ");
+   printf("\n		City : %s",acc.add.city);
+   printf("\n		Street : %s",acc.add.street);
+   printf("\nPhone : %s\tID : %d",acc.phone,acc.id);
+   printf("\nCirme : %s\nCaluse : %d\nP_ment : %s",acc.ci.cirme,acc.ci.caluse,acc.ci.p_ment);
+   printf("\n		      = Date of Cirme =");
+   printf("\nDay : %d\tMonth : %d\tYear : %d",acc.ci.dd.d,acc.ci.dd.m,acc.ci.dd.y);
+   getch();
+goto e;
+}
+else
+{
+printf("The no of Accused You Entred not Found !\n	* Press any key to Back to Menu *");
+getch();
+goto e;
+}
+}
+fclose(fp);
+getch();
+e:
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Search_Name()
+{
+rep:
+int en;
+char str[20],smp;
+fp=fopen("data1.txt","r");
+printf("\nEnter The Name : ");
+fflush(stdin);
+gets(str);
+smp=strcmp(str,acc.name);
+if(smp==0)
+{
+   printf("\nThe Name is : %s",acc.name);
+   printf("\nBirthday is : %d/%d/%d",acc.bd.d,acc.bd.m,acc.bd.y);
+   printf("\nAddress is : ");
+   printf("\n		City : %s",acc.add.city);
+   printf("\n		Street : %s",acc.add.street);
+   printf("\nPhone : %s\tID : %d",acc.phone,acc.id);
+   printf("\nCirme : %s\nCaluse : %d\nP_ment : %s",acc.ci.cirme,acc.ci.caluse,acc.ci.p_ment);
+   printf("\n		      = Date of Cirme =");
+   printf("\nDay : %d\tMonth : %d\tYear : %d",acc.ci.dd.d,acc.ci.dd.m,acc.ci.dd.y);
+   printf("\n		      * Press any key to Back to Menu *");
+   fclose(fp);
+   getch();
+   }
+   else
+   {
+	printf("\n* Sorry .. Your Accused not Found !\n		* To try Again Press Y or N to Back to Menu *");
+   en=getche();
+   if(en=='Y' || en=='y')
+   goto rep;
+   else
+   fclose(fp);
+   goto e;
+}
+e:
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+void Display_All()
+{
+fp=fopen("data1.txt","r+");
+rewind(fp);
+while(!feof(fp))
+{
+fread(&acc,sizeof(acc),1,fp);
+   printf("\nThe Full Name is : %s",acc.name);
+   printf("\nBirthday is : %d/%d/%d",acc.bd.d,acc.bd.m,acc.bd.y);
+   printf("\nAddress is :");
+   printf("\n		City : %s",acc.add.city);
+   printf("\n		Street : %s",acc.add.street);
+   printf("\nPhone : %s\tID : %d",acc.phone,acc.id);
+   printf("\nCirme : %s\nCaluse : %d\nP_ment : %s",acc.ci.cirme,acc.ci.caluse,acc.ci.p_ment);
+   printf("\n		      = Date of Cirme =");
+   printf("\nDay : %d\tMonth : %d\tYear : %d",acc.ci.dd.d,acc.ci.dd.m,acc.ci.dd.y);
+   printf("\n==============================================================\n			* Press any key to Back to Menu *");
+   }
+fclose(fp);
+getch();
+e:
+}
+
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+void main()
+{
+menu:
+clrscr();
+ int  gdriver = DETECT, gmode;
+   int x,y,w;
+   char sa[5],yn,da[15];
+   initgraph(&gdriver, &gmode, "../bgi");
+   for(x=10;x<=610;x++)
+    outtextxy(x,100,".");
+   for(y=100;y<=330;y++)
+   outtextxy(610,y,".");
+   for(x=610;x>=10;x--)
+   outtextxy(x,330,".");
+   for(y=330;y>=100;y--)
+   outtextxy(10,y,".");
+   settextstyle(1,0,1);
+   outtextxy(280,80," MENU ");
+   setcolor(7);
+   outtextxy(30,120,"1- Add Accused");
+   setcolor(LIGHTGREEN);
+   outtextxy(30,150,"2- Delete Accused");
+   setcolor(5);
+   outtextxy(30,180,"3- Modify Accuesd");
+   setcolor(YELLOW);
+   outtextxy(30,210,"4- Search Accused ID");
+   setcolor(9);
+   outtextxy(30,240,"5- Search Accused Name");
+   setcolor(3);
+   outtextxy(30,270,"6- Display All Accused");
+   setcolor(4);
+   outtextxy(30,300,"7- Exit");
+   gotoxy(8,25);
+   setcolor(6);
+   outtextxy(20,340,"* Select Your Choise : ");
+   scanf("%d",&x);
+   switch(x)
+   {
+case 1: add();goto menu;break;
+case 2: Del();goto menu;break;
+case 3: Modefiy();goto menu;break;
+case 4: Search_ID();goto menu;break;
+case 5: Search_Name();goto menu;break;
+case 6: Display_All();goto menu;break;
+case 7:
+{
+ setcolor(4);
+ outtextxy(130,420,"\n* Are You Sure to want Exit (Y/N) ? ");
+ char ch=getche();
+ if(ch=='N' || ch=='n')
+ goto menu;
+ else
+exit(1);
+};break;
+default:
+{
+  printf("\n* Error .. Please Enter any Number btween 1 to 7 !\n\n			* To try Agian press any key *");
+  getch();
+  }goto menu;
+}
+}
